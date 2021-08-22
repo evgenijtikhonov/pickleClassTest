@@ -1,30 +1,36 @@
 import os as os
 import pickle as pickle
 from dataclasses import dataclass, field
+from random import randint
 
-file_name = 'options.pickle'
+file_name = '.options.pickle'
+range_min = 3
+range_max = 12
 
 
+@dataclass
 class Element:
+    name: str
+    count: int
 
-    def __init__(self, name='', count=1):
-        self.name = name
-        self.count = count
+    def __post_init__(self):
+        pass
 
     def show(self):
         return f"{self.name} count: {self.count}"
 
 
+@dataclass
 class RescuerData:
-    ver_no = '20210821'
+    ver_no: str = field(init=False)
 
-    email_my = ''
-    email_your = ''
+    email_my: str
+    email_your: str
 
-    elements: dict[int: Element] = {}
+    elements: dict[int: Element] = field(init=False, compare=False)
 
     def __init__(self):
-        pass
+        ver_no = '20210821'
 
     def write_data(self):
         try:
@@ -51,18 +57,17 @@ class RescuerData:
             else:
                 return md
 
+    def elements_fill(self):
+        dic: dict[int: Element]
 
-def elements_fill():
-    dic: dict[int: Element]
+        dic = {1: Element(name='first', count=1)}
+        dic |= {2: Element(name='second', count=10)}
+        dic |= {3: Element(name='third', count=3)}
 
-    dic = {1: Element(name='first', count=1)}
-    dic |= {2: Element(name='second', count=10)}
-    dic |= {3: Element(name='third', count=3)}
-
-    RescuerData.elements = dic
-    RescuerData.elements.update({4: Element(name='thirds', count=30)})
-    RescuerData.email_my = 'my e-mail'
-    main_data.email_you = 'your e-mail'
+        RescuerData.elements = dic
+        RescuerData.elements.update({4: Element(name='thirds', count=30)})
+        RescuerData.email_my = 'my e-mail'
+        main_data.email_your = 'your e-mail'
 
 
 def print_dic(d):
@@ -88,12 +93,13 @@ if __name__ == '__main__':
     if main_data is None:
         main_data = RescuerData()
         elements_fill()
-        print_dic(RescuerData.elements)
+        print_dic(main_data.elements)
 
         main_data.write_data()
 
-    print('Count of records written : ', len(RescuerData.elements))
+    print('Count of records written : ', len(main_data.elements))
 # не работает совсем
 #    print('Count of records written : ', main_data.elements_count())
-    print('E-mail my: ', RescuerData.email_my)
+    print('E-mail my: ', main_data.email_my)
+    print('E-mail your: ', main_data.email_your)
 
